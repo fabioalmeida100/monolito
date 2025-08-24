@@ -70,7 +70,7 @@ describe("Invoice Facade unit test", () => {
     expect(invoiceFromModel.items[0].price).toEqual(100)
     expect(invoiceFromModel.items[1].name).toEqual("Item 2")
     expect(invoiceFromModel.items[1].price).toEqual(200)
-    expect(invoiceFromModel.total).toEqual(300)
+    expect(invoiceFromModel.items.reduce((total, item) => total + item.price, 0)).toEqual(result.total)
   })
 
   it("should find an invoice", async () => {

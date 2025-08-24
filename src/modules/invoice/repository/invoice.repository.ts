@@ -18,7 +18,7 @@ export default class InvoiceRepository implements InvoiceGateway {
       city: invoice.address.city,
       state: invoice.address.state,
       zipCode: invoice.address.zipCode,
-      total: invoice.total,
+      total: invoice.items.reduce((total, item) => total + item.price, 0),
       createdAt: invoice.createdAt,
       updatedAt: invoice.updatedAt
     })

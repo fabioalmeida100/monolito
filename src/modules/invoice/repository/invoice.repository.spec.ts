@@ -60,13 +60,11 @@ describe("Invoice Repository unit test", () => {
 
     await repository.save(invoice)
 
-    expect(invoice.id).toBeDefined()
-    expect(invoice.name).toEqual("Invoice 1")
-    expect(invoice.document).toEqual("123456789")
-    expect(invoice.total).toEqual(300)
-
-
-    const savedInvoice = await InvoiceModel.findOne({ where: { id: invoice.id.id } })
+    const savedInvoice = await InvoiceModel.findOne({ 
+      where: { id: invoice.id.id },
+      include: [{ model: InvoiceItemsModel, as: 'items' }]
+    })
+    
     expect(savedInvoice).toBeDefined()
     expect(savedInvoice.name).toEqual("Invoice 1")
     expect(savedInvoice.document).toEqual("123456789")
@@ -76,7 +74,11 @@ describe("Invoice Repository unit test", () => {
     expect(savedInvoice.city).toEqual("Criciúma")
     expect(savedInvoice.state).toEqual("SC")
     expect(savedInvoice.zipCode).toEqual("88888-888")
-    expect(savedInvoice.total).toEqual(300)
+    expect(savedInvoice.items).toHaveLength(2)
+    expect(savedInvoice.items[0].name).toEqual("Item 1")
+    expect(savedInvoice.items[0].price).toEqual(100)
+    expect(savedInvoice.items[1].name).toEqual("Item 2")
+    expect(savedInvoice.items[1].price).toEqual(200)
 
     const savedItems = await InvoiceItemsModel.findAll({ where: { invoiceId: invoice.id.id } })
     expect(savedItems).toHaveLength(2)
@@ -136,7 +138,6 @@ describe("Invoice Repository unit test", () => {
     expect(foundInvoice.items[0].price).toEqual(100)
     expect(foundInvoice.items[1].name).toEqual("Item 2")
     expect(foundInvoice.items[1].price).toEqual(200)
-    expect(foundInvoice.total).toEqual(300)
   })
 
   it("should throw error when invoice not found", async () => {

@@ -34,15 +34,13 @@ export class InvoiceModel extends Model {
   @Column({ allowNull: false })
   zipCode: string
 
-  @Column({ allowNull: false })
-  total: number
-
+  @HasMany(() => InvoiceItemsModel)
+  items: InvoiceItemsModel[]
+  
   @Column({ allowNull: false })
   createdAt: Date
 
   @Column({ allowNull: false })
   updatedAt: Date
 
-  @HasMany(() => InvoiceItemsModel)
-  items: InvoiceItemsModel[]
 }

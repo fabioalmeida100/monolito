@@ -6,7 +6,7 @@ import FindInvoiceUseCase from "./find-invoice.usecase"
 
 const MockRepository = () => {
   return {
-    generate: jest.fn(),
+    save: jest.fn(),
     find: jest.fn()
   }
 }
