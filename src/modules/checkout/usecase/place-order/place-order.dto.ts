@@ -11,4 +11,5 @@ export interface PlaceOrderOutputDto {
   products: {
     productId: string;
   }[];
+  invoiceId: string | null;
 }
