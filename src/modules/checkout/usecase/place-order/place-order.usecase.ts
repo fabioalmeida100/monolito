@@ -104,13 +104,20 @@ export default class PlaceOrderUseCase implements UseCaseInterface {
     }
 
     for (const p of input.products) {
-      const product = await this._productFacade.checkStock({
-        productId: p.productId,
-      });
-      if (product.stock <= 0) {
-        throw new Error(
-          `Product ${product.productId} is not available in stock`
-        );
+      try {
+        const product = await this._productFacade.checkStock({
+          productId: p.productId,
+        });
+        if (product.stock <= 0) {
+          throw new Error(
+            `Product ${product.productId} is not available in stock`
+          );
+        }
+      } catch (error) {
+        if (error instanceof Error && error.message.includes("not found")) {
+          throw new Error(`Product with id ${p.productId} not found`);
+        }
+        throw error;
       }
     }
   }
