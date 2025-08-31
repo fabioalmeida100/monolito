@@ -4,7 +4,7 @@ import { sequelize } from "../../api/express";
 import { InvoiceModel } from "../../../modules/invoice/repository/invoice.model";
 import { InvoiceItemsModel } from "../../../modules/invoice/repository/invoice-items.model";
 
-describe("E2E test for checkout", () => {
+describe("E2E test for invoice", () => {
     beforeAll(async () => {
         await new Promise(resolve => setTimeout(resolve, 100));
     });

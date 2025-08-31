@@ -11,6 +11,7 @@ import { ProductModelAdm } from "../../modules/product-adm/repository/product.mo
 import { ProductModelCatalog } from "../../modules/store-catalog/repository/product.model";
 import { checkoutRoute } from "./routes/checkout.route";
 import { invoiceRoute } from "./routes/invoice.route";
+import { clientRoute } from "./routes/client.route";
 
 
 export const app: Express = express();
@@ -18,6 +19,7 @@ app.use(express.json());
 
 app.use("/checkout", checkoutRoute);
 app.use("/invoice", invoiceRoute);
+app.use("/client", clientRoute);
 
 
 export let sequelize: Sequelize;
