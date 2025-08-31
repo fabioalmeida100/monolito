@@ -20,16 +20,21 @@ describe("E2E test for product", () => {
     });
     
     it("should create a product", async () => {
+        // Arrange
+        const input = {
+            id: "1",
+            name: "Product 1",
+            description: "Product 1 description",
+            purchasePrice: 100,
+            stock: 10,
+        }
+
+        // Act
         const productResponse = await request(app)
             .post("/product")
-            .send({
-                id: "1",
-                name: "Product 1",
-                description: "Product 1 description",
-                purchasePrice: 100,
-                stock: 10,
-            });
-            
+            .send(input);
+
+        // Assert
         expect(productResponse.status).toBe(201);
         expect(productResponse.body.id).toBe("1");
         expect(productResponse.body.name).toBe("Product 1");
@@ -39,16 +44,21 @@ describe("E2E test for product", () => {
     });
     
     it("try create a product with negative stock", async () => {
+        // Arrange
+        const input = {
+            id: "1",
+            name: "Product 1",
+            description: "Product 1 description",
+            purchasePrice: 100,
+            stock: -1,
+        }
+
+        // Act
         const productResponse = await request(app)
             .post("/product")
-            .send({
-                id: "1",
-                name: "Product 1",
-                description: "Product 1 description",
-                purchasePrice: 100,
-                stock: -1,
-            });
-            
+            .send(input);
+
+        // Assert
         expect(productResponse.status).toBe(400);
         expect(productResponse.body).toHaveProperty('message');
         expect(productResponse.body.message).toBe("Product stock cannot be negative");

@@ -23,6 +23,7 @@ describe("E2E test for invoice", () => {
     });
 
     it("should create a invoice and get it", async () => {
+        // Arrange
         await InvoiceModel.create({
             id: "1",
             name: "Invoice 1",
@@ -44,11 +45,13 @@ describe("E2E test for invoice", () => {
             createdAt: new Date(),
             updatedAt: new Date(),
         });
-        
+
+        // Act
         const invoiceResponse = await request(app)
             .get(`/invoice/1`)
             .send();
-            
+
+        // Assert
         expect(invoiceResponse.status).toBe(200);
         expect(invoiceResponse.body.id).toBe("1");
         expect(invoiceResponse.body.name).toBe("Invoice 1");
@@ -67,9 +70,15 @@ describe("E2E test for invoice", () => {
     });
     
     it("should not find a invoice with invalid id", async () => {
+        // Arrange
+        const invoiceId = "2";
+
+        // Act
         const invoiceResponse = await request(app)
-            .get(`/invoice/2`)
+            .get(`/invoice/${invoiceId}`)
             .send();
+            
+        // Assert
         expect(invoiceResponse.status).toBe(400);
         expect(invoiceResponse.body).toHaveProperty('message');
         expect(invoiceResponse.body.message).toBe("Invoice not found");

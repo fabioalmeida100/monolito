@@ -4,6 +4,8 @@ import { ClientModel } from "../../../modules/client-adm/repository/client.model
 import { app } from "../../api/express";
 import request from "supertest";
 import { sequelize } from "../../api/express";
+import { InvoiceModel } from "../../../modules/invoice/repository/invoice.model";
+import { InvoiceItemsModel } from "../../../modules/invoice/repository/invoice-items.model";
 
 describe("E2E test for checkout", () => {
     beforeAll(async () => {
@@ -24,6 +26,7 @@ describe("E2E test for checkout", () => {
     });
 
     it("should create a checkout", async () => {
+        // Arrange
         await ClientModel.create({
             id: "1",
             name: "John Doe",
@@ -61,26 +64,55 @@ describe("E2E test for checkout", () => {
             updatedAt: new Date(),
         });
 
+        // Act
         const response = await request(app)
             .post("/checkout")
             .send({
                 clientId: "1",
                 products: [{ productId: "1" }]
             });
-            
+
+        // Assert
+        const invoice = (await InvoiceModel.findAll({ include: [{ model: InvoiceItemsModel }] }));
+
         expect(response.status).toBe(200);
         expect(response.body).toHaveProperty('id');
         expect(response.body).toHaveProperty('total');
         expect(response.body).toHaveProperty('products');
+        expect(response.body.total).toBe(100);
+        expect(response.body.products).toHaveLength(1);
+        expect(response.body.products[0].productId).toBe("1"); 
+        expect(invoice).toHaveLength(1);
+        expect(invoice[0].id).toBe(response.body.invoiceId);
+        expect(invoice[0].name).toBe("John Doe");
+        expect(invoice[0].document).toBe("12345678901");
+        expect(invoice[0].street).toBe("Main St");
+        expect(invoice[0].number).toBe("123");
+        expect(invoice[0].complement).toBe("Apto 1");
+        expect(invoice[0].city).toBe("Anytown");
+        expect(invoice[0].state).toBe("USA");
+        expect(invoice[0].zipCode).toBe("12345678901");
+        expect(invoice[0].items[0].invoiceId).toBe(response.body.invoiceId);
+        expect(invoice[0].items[0].name).toBe("Product 1");
+        expect(invoice[0].items[0].price).toBe(100);
+        expect(invoice[0].items[0].id).toBe("1");
+        expect(invoice[0].items[0].createdAt).toBeDefined();
+        expect(invoice[0].items[0].updatedAt).toBeDefined();
     });
     
     it("should not create a checkout with invalid client", async () => {
+        // Arrange
+        const input = {
+            clientId: "2",
+            products: [{ productId: "1" }]
+        }
+
+        // Act
         const response = await request(app)
             .post("/checkout")
-            .send({
-                clientId: "2",
-                products: [{ productId: "1" }]
-            });
+            .send(input);
+
+        // Assert
         expect(response.status).toBe(400);
         expect(response.body).toHaveProperty('message');
         expect(response.body.message).toBe('Client not found');

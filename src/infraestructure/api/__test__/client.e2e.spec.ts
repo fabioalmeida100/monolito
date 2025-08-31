@@ -20,6 +20,7 @@ describe("E2E test for client", () => {
     });
    
     it("should create a client", async () => {
+        // Arrange
         let input = {
             id: "1",
             name: "Lucian",
@@ -35,10 +36,12 @@ describe("E2E test for client", () => {
             }
         }
         
+        // Act
         const clientResponse = await request(app)
             .post("/client")
             .send(input);
 
+        // Assert
         expect(clientResponse.status).toBe(200);
         expect(clientResponse.body.id).toBe("1");
         expect(clientResponse.body.name).toBe("Lucian");
@@ -55,21 +58,26 @@ describe("E2E test for client", () => {
     });
     
     it("should not create a client with invalid payload", async () => {
+        // Arrange
+        const input = {
+            id: "1",
+            name: "Lucian",
+            email: "lucian@xpto.com",
+            document: "1234-5678",
+            address: {
+                street: "Rua 123",
+                complement: "Casa Verde",
+                city: "Criciúma",
+                state: "SC",
+                zipCode: "88888-888"
+            }
+        }
+        
         const clientResponse = await request(app)
             .post("/client")
-            .send({ 
-                id: "1",
-                name: "Lucian",
-                email: "lucian@xpto.com",
-                document: "1234-5678",
-                address: {
-                    street: "Rua 123",
-                    complement: "Casa Verde",
-                    city: "Criciúma",
-                    state: "SC",
-                    zipCode: "88888-888"
-                }
-            });
+            .send(input);
+
+        // Assert
         expect(clientResponse.status).toBe(400);
         expect(clientResponse.body).toHaveProperty('message');
         expect(clientResponse.body.message).toBe("notNull Violation: ClientModel.number cannot be null");
