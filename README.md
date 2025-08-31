@@ -12,6 +12,7 @@ The project use modules to organize the code.
 - `payment`: Module to manage payments.
 - `product-adm`: Module to manage products.
 - `store-catalog`: Module to manage store catalog.
+- `checkout`: Module to manage checkout.
 
 Furthermore, the project use facade and factory for give a better interface to the client use the modules.
 
