@@ -1,6 +1,5 @@
 import request from "supertest";
 import { app, sequelize } from "../express";
-import Address from "../../../modules/@shared/domain/value-object/address";
 
 describe("E2E test for client", () => {
     beforeAll(async () => {

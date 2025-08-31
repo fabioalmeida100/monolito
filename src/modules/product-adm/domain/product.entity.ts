@@ -24,6 +24,7 @@ export default class Product extends BaseEntity implements AggregateRoot {
     this._description = props.description;
     this._purchasePrice = props.purchasePrice;
     this._stock = props.stock;
+    this.validate();
   }
 
   get name(): string {
@@ -56,5 +57,11 @@ export default class Product extends BaseEntity implements AggregateRoot {
 
   set purchasePrice(purchasePrice: number) {
     this._purchasePrice = purchasePrice;
+  }
+  
+  validate() {
+    if (this._stock < 0) {
+      throw new Error("Product stock cannot be negative");
+    }
   }
 }
